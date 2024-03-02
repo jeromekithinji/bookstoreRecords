@@ -1,0 +1,106 @@
+Semantic error in file: Cartoons_Comics.csv
+====================
+Error: invalid year
+Record: The cow,Patricia Butler,-3.95,0711991979,CCB,2026
+
+Semantic error in file: Cartoons_Comics.csv
+====================
+Error: invalid price
+Record: The cow,Patricia Butler,-3.95,0711991979,CCB,2026
+
+Error: invalid ISBN-13
+Record: RAGE 2 com,Patricia Butler,5.95,7326157182253,CCB,2026
+
+Error: invalid year
+Record: RAGE 2 com,Patricia Butler,5.95,7326157182253,CCB,2026
+
+Error: invalid ISBN-13
+Record: lol lol,Patricia Butler,3.95,7326157182253,CCB,2006
+
+Error: invalid ISBN-13
+Record: get on,Patricia Butler,-2.95,7326157182253,CCB,2006
+
+Error: invalid price
+Record: get on,Patricia Butler,-2.95,7326157182253,CCB,2006
+
+Error: invalid ISBN-13
+Record: uinfe,Patricia Butler,-8.95,7326157182253,CCB,2008
+
+Error: invalid price
+Record: uinfe,Patricia Butler,-8.95,7326157182253,CCB,2008
+
+Error: invalid price
+Record: jeye,Patricia Butler,-5.95,4603192018240,CCB,2005
+
+Error: invalid year
+Record: jyrbjfy,Patricia Butler,8.95,6319208627402,CCB,2026
+
+Semantic error in file: Movies_TV_Books.csv
+====================
+Error: invalid ISBN-13
+Record: RAGE com,Patrar rutler,5.95,0711991979344,MTV,2006
+
+Error: invalid ISBN-13
+Record: erw,Patri Buer,45.95,0711993451979,MTV,2006
+
+Error: invalid ISBN-13
+Record: jiuhds,atria utle,7.95,0711231991979,MTV,2006
+
+Semantic error in file: Music_Radio_Books.csv
+====================
+Error: invalid ISBN-13
+Record: RAGE com,Patrar rutler,5.95,0711991934579,MRB,2006
+
+Error: invalid ISBN-13
+Record: lol lol,Patr dutler,3.95,0711991009979,MRB,2006
+
+Error: invalid ISBN-13
+Record: ere,tricia ler,1.95,0711991987579,MRB,2006
+
+Error: invalid ISBN-10
+Record: erw,Patri Buer,45.95,0713451979,MRB,2006
+
+Error: invalid ISBN-10
+Record: jiuhds,atria utle,7.95,0714991979,MRB,2006
+
+Semantic error in file: Nostalgia_Eclectic_Books.csv
+====================
+Error: invalid ISBN-13
+Record: The cow,Patricia,3.95,0711991475979,NEB,2006
+
+Error: invalid ISBN-13
+Record: lol lol,Patr dutler,3.95,0711934591979,NEB,2006
+
+Error: invalid ISBN-13
+Record: erw,Patri Buer,45.95,0711993451979,NEB,2006
+
+Semantic error in file: Old_Time_Radio_Books.csv
+====================
+Error: invalid ISBN-13
+Record: The cow,Patricia,3.95,0711994563979,OTR,2006
+
+Error: invalid ISBN-13
+Record: com show,Uicia Butler,6.95,0711993331979,OTR,2006
+
+Error: invalid ISBN-13
+Record: get on,Picia ler,2.95,0711993331979,OTR,2006
+
+Error: invalid ISBN-13
+Record: erw,Patri Buer,45.95,0711991345979,OTR,2006
+
+Semantic error in file: Sports_Sports_Memorabilia.csv
+====================
+Error: invalid ISBN-13
+Record: RAGE com,Patrar rutler,5.95,0711948991979,SSM,2006
+
+Error: invalid ISBN-13
+Record: lol lol,Patr dutler,3.95,0711923491979,SSM,2006
+
+Error: invalid ISBN-13
+Record: ere,tricia ler,1.95,0711991945679,SSM,2006
+
+Semantic error in file: Trains_Planes_Automobiles.csv
+====================
+Error: invalid year
+Record: get on,ler,2.95,0711991979,TPA,0006
+
