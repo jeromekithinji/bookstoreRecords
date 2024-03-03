@@ -19,8 +19,239 @@ public class BookManager {
         do_part2();
     }
 
+    /**
+     * Reads input files containing book records, validates each record, 
+     * and adds valid records to output files. Logs syntax errors to a 
+     * separate error log file.
+     */
     static void do_part1() {
+        String bookRecordsNames[] = new String[0];
+        Scanner scanner = null;
 
+        // read input files file
+        try {
+            scanner = new Scanner(new FileInputStream("Part1_input_file_names.txt"));
+            int numberOfFiles = scanner.nextInt();
+            scanner.nextLine();
+
+            bookRecordsNames = new String[numberOfFiles];
+            for (int i = 0; i < numberOfFiles; i++) {
+                bookRecordsNames[i] = scanner.nextLine();
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found");
+        }
+
+        // read the book record files
+        for (int i = 0; i < bookRecordsNames.length; i++) {
+            try {
+                String errorMessage = "";
+                boolean firstError = true;
+                scanner = new Scanner(new FileInputStream(bookRecordsNames[i]));
+                while (scanner.hasNext()) {
+                    String bookRecord = scanner.nextLine();
+                    String bookRecordTokens[] = tokenizeBookRecord(bookRecord);
+                    if (validateBookRecord(bookRecordsNames[i], bookRecordTokens, bookRecord, firstError)) {
+                        addRecordToFile(bookRecord, bookRecordTokens[4]);
+                    } else {
+                        firstError = false;
+                    }
+                }
+                firstError = true;
+            } catch (FileNotFoundException e) {
+                System.out.println("File not found");
+            }
+        }
+        scanner.close();
+    }
+
+    /**
+    * Adds the given book record to the specified genre output file.
+    *
+    * @param bookRecord the book record to add
+    * @param genre      the genre of the book record
+    */
+    static void addRecordToFile(String bookRecord, String genre) {
+        String fileName;
+        switch (genre) {
+            case "CCB":
+                fileName = "Cartoons_Comics.csv";
+                break;
+            case "HCB":
+                fileName = "Hobbies_Collectibles.csv";
+                break;
+            case "MTV":
+                fileName = "Movies_TV_Books.csv";
+                break;
+            case "MRB":
+                fileName = "Music_Radio_Books.csv";
+                break;
+            case "NEB":
+                fileName = "Nostalgia_Eclectic_Books.csvOld_Time_Radio_Books.csv";
+                break;
+            case "OTR":
+                fileName = "Old_Time_Radio_Books.csv";
+                break;
+            case "SSM":
+                fileName = "Sports_Sports_Memorabilia.csv";
+                break;
+            case "TPA":
+                fileName = "Trains_Planes_Automobiles.csv";
+                break;
+            default:
+                System.out.println("Error: Invalid genre");
+                return;
+        }
+
+        PrintWriter writer = null;
+        try {
+            writer = new PrintWriter(new FileOutputStream("part1_output_files" + File.separator + fileName, true));
+            writer.println(bookRecord);
+        } catch (IOException e) {
+            System.out.println("Error could not write book record");
+        }
+
+        writer.close();
+    }
+
+    /**
+     * Logs a syntax error to the error log file.
+     *
+     * @param error the error message
+     * @param firstError a flag indicating if this is the first error for the file
+     * @param fileName the name of the file containing the error
+     */
+    private static void logSyntaxErrorToFile(String error, boolean firstError, String fileName) {
+        PrintWriter writer = null;
+        try {
+            writer = new PrintWriter(
+                    new FileOutputStream("error_logs" + File.separator + "syntax_error_file.txt", true));
+            if (firstError) {
+                writer.println("syntax error in file: " + fileName);
+                writer.println("====================");
+                writer.println(error);
+            } else {
+                writer.println(error);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to wrrite to syntax_error_file.txt");
+            e.printStackTrace();
+        }
+        writer.close();
+    }
+
+    /**
+     * Validates the given book record for syntax errors.
+     *
+     * @param bookRecordFile the name of the input file containing the book record
+     * @param bookRecordTokens the tokens of the book record
+     * @param bookRecord the book record
+     * @param firstError a flag indicating if this is the first error for the file
+     * @return true if the book record is valid, false otherwise
+     */
+    static boolean validateBookRecord(String bookRecordFile, String[] bookRecordTokens, String bookRecord,
+            boolean firstError) {
+        if (bookRecordTokens.length > 6) {
+            logSyntaxErrorToFile("Error: too many fields\nRecord: " + bookRecord + "\n", firstError, bookRecordFile);
+            return false;
+        } else if (bookRecordTokens.length < 5) {
+            logSyntaxErrorToFile("Error: too few fields\nRecord: " + bookRecord + "\n", firstError, bookRecordFile);
+            return false;
+        } else {
+            if (!validateMissingFields(bookRecordTokens, bookRecord, bookRecordFile, firstError)) {
+                return false;
+            } else {
+                return isGenreValid(bookRecordTokens, bookRecord, bookRecordFile, firstError);
+            }
+        }
+    }
+
+    /**
+     * Validates missing fields in the book record.
+     *
+     * @param bookRecordTokens the tokens of the book record
+     * @param bookRecord the book record
+     * @param bookRecordFile the name of the input file containing the book record
+     * @param firstError a flag indicating if this is the first error for the file
+     * @return true if all required fields are present, false otherwise
+     */
+    static boolean validateMissingFields(String[] bookRecordTokens, String bookRecord, String bookRecordFile,
+            boolean firstError) {
+        boolean missingField = false;
+        String missingFields = "";
+        for (int j = 0; j < bookRecordTokens.length; j++) {
+            if (bookRecordTokens[j].isEmpty()) { // should we consider if there is an empty space character as well?
+                missingField = true;
+                switch (j) {
+                    case 0:
+                        missingFields += "title ";
+                        break;
+                    case 1:
+                        missingFields += "authors ";
+                        break;
+                    case 2:
+                        missingFields += "price ";
+                        break;
+                    case 3:
+                        missingFields += "isbn ";
+                        break;
+                    case 4:
+                        missingFields += "genre ";
+                        break;
+                    case 5:
+                        missingFields += "year ";
+                        break;
+                }
+            }
+        }
+        if (missingField) {
+            logSyntaxErrorToFile("Error: missing " + missingFields + "\nRecord: " + bookRecord + "\n", firstError,
+                    bookRecordFile);
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * Validates the genre of the book record.
+     *
+     * @param bookRecordTokens the tokens of the book record
+     * @param bookRecord the book record
+     * @param bookRecordFile the name of the input file containing the book record
+     * @param firstError a flag indicating if this is the first error for the file
+     * @return true if the genre is valid, false otherwise
+     */
+    static boolean isGenreValid(String[] bookRecordTokens, String bookRecord, String bookRecordFile,
+            boolean firstError) {
+        String[] validGenres = { "CCB", "HCB", "MTV", "MRB", "NEB", "OTR", "SSM", "TPA" };
+        boolean isValidGenre = false;
+        for (String validGenre : validGenres) {
+            if (validGenre.equals(bookRecordTokens[4])) {
+                isValidGenre = true;
+                break;
+            }
+        }
+        if (!isValidGenre) {
+            logSyntaxErrorToFile("Error: invalid genre\nRecord: " + bookRecord + "\n", firstError, bookRecordFile);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Tokenizes the given book record.
+     *
+     * @param bookRecord the book record to tokenize
+     * @return an array of tokens
+     */
+    static String[] tokenizeBookRecord(String bookRecord) {
+        String[] tokens = bookRecord.split("\\s*,\\s*(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+        // remove double quotes from the tokens
+        for (int i = 0; i < tokens.length; i++) {
+            tokens[i] = tokens[i].replaceAll("^\"|\"$", "");
+        }
+        return tokens;
     }
 
     /**
