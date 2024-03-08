@@ -357,7 +357,7 @@ public class BookManager {
     }
 
     static void do_part3() {
-
+    
     }
 
     private static void logSemanticExceptionToFile(String error) {
