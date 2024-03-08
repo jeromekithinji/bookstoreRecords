@@ -16,6 +16,7 @@ import Exceptions.BadYearException;
 
 public class BookManager {
     public static void main(String args[]) {
+        do_part1();
         do_part2();
     }
 
@@ -30,7 +31,7 @@ public class BookManager {
 
         // read input files file
         try {
-            scanner = new Scanner(new FileInputStream("Part1_input_file_names.txt"));
+            scanner = new Scanner(new FileInputStream("part1_helper_files" + File.separator + "Part1_input_file_names.txt"));
             int numberOfFiles = scanner.nextInt();
             scanner.nextLine();
 
@@ -47,7 +48,7 @@ public class BookManager {
             try {
                 String errorMessage = "";
                 boolean firstError = true;
-                scanner = new Scanner(new FileInputStream(bookRecordsNames[i]));
+                scanner = new Scanner(new FileInputStream("part1_helper_files" + File.separator +  bookRecordsNames[i]));
                 while (scanner.hasNext()) {
                     String bookRecord = scanner.nextLine();
                     String bookRecordTokens[] = tokenizeBookRecord(bookRecord);

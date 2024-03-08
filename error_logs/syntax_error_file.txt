@@ -17,3 +17,60 @@ Record: , Ayn Rand, 14.80, 9780452011878, MRB, 1957
 Error: invalid genre
 Record: "The Grapes of Wrath", John Steinbeck, 10.05, 9780143039433, JAY, 1939
 
+syntax error in file: books1997.csv
+====================
+Error: missing authors 
+Record: "Gone with the Wind",, 13.75, 9780446675536, CCB, 1936
+
+Error: too few fields
+Record: "The Adventures of Huckleberry Finn", Mark Twain, 8.45, 9780486280615,
+
+syntax error in file: books1998.csv
+====================
+Error: missing price 
+Record: "David Copperfield", Charles Dickens,, 9780486266848, HCB, 1850
+
+Error: missing title 
+Record: , Ayn Rand, 14.80, 9780452011878, MRB, 1957
+
+Error: invalid genre
+Record: "The Grapes of Wrath", John Steinbeck, 10.05, 9780143039433, JAY, 1939
+
+syntax error in file: books1997.csv
+====================
+Error: missing authors 
+Record: "Gone with the Wind",, 13.75, 9780446675536, CCB, 1936
+
+Error: too few fields
+Record: "The Adventures of Huckleberry Finn", Mark Twain, 8.45, 9780486280615,
+
+syntax error in file: books1998.csv
+====================
+Error: missing price 
+Record: "David Copperfield", Charles Dickens,, 9780486266848, HCB, 1850
+
+Error: missing title 
+Record: , Ayn Rand, 14.80, 9780452011878, MRB, 1957
+
+Error: invalid genre
+Record: "The Grapes of Wrath", John Steinbeck, 10.05, 9780143039433, JAY, 1939
+
+syntax error in file: books1997.csv
+====================
+Error: missing authors 
+Record: "Gone with the Wind",, 13.75, 9780446675536, CCB, 1936
+
+Error: too few fields
+Record: "The Adventures of Huckleberry Finn", Mark Twain, 8.45, 9780486280615,
+
+syntax error in file: books1998.csv
+====================
+Error: missing price 
+Record: "David Copperfield", Charles Dickens,, 9780486266848, HCB, 1850
+
+Error: missing title 
+Record: , Ayn Rand, 14.80, 9780452011878, MRB, 1957
+
+Error: invalid genre
+Record: "The Grapes of Wrath", John Steinbeck, 10.05, 9780143039433, JAY, 1939
+
