@@ -1,12 +1,12 @@
 Semantic error in file: Cartoons_Comics.csv
 ====================
 Error: invalid year
-Record: The cow,Patricia Butler,-3.95,0711991979,CCB,2026
+Record: The cow,Patricia Butler,-3.95, 0711991979,CCB, 2026
 
 Semantic error in file: Cartoons_Comics.csv
 ====================
 Error: invalid price
-Record: The cow,Patricia Butler,-3.95,0711991979,CCB,2026
+Record: The cow,Patricia Butler,-3.95, 0711991979,CCB, 2026
 
 Error: invalid ISBN-13
 Record: RAGE 2 com,Patricia Butler,5.95,7326157182253,CCB,2026
@@ -38,7 +38,7 @@ Record: jyrbjfy,Patricia Butler,8.95,6319208627402,CCB,2026
 Semantic error in file: Movies_TV_Books.csv
 ====================
 Error: invalid ISBN-13
-Record: RAGE com,Patrar rutler,5.95,0711991979344,MTV,2006
+Record: RAGE com,Patrar rutler,5.95,0711991979344, MTV, 2006
 
 Error: invalid ISBN-13
 Record: erw,Patri Buer,45.95,0711993451979,MTV,2006

@@ -53,12 +53,12 @@ public class BookManager {
                     String bookRecord = scanner.nextLine();
                     String[] splitBookRecord = bookRecord.split(",");
 
-                    String title = splitBookRecord[0];
-                    String author = splitBookRecord[1];
-                    double price = Double.parseDouble(splitBookRecord[2]);
-                    String isbn = splitBookRecord[3];
-                    String genre = splitBookRecord[4];
-                    int year = Integer.parseInt(splitBookRecord[5]);
+                    String title = splitBookRecord[0].trim();
+                    String author = splitBookRecord[1].trim();
+                    double price = Double.parseDouble(splitBookRecord[2].trim());
+                    String isbn = splitBookRecord[3].trim();
+                    String genre = splitBookRecord[4].trim();
+                    int year = Integer.parseInt(splitBookRecord[5].trim());
 
                     Boolean isValidIsbn = false;
                     Boolean isValidYear = false;
