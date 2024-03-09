@@ -1,8 +1,11 @@
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -16,13 +19,107 @@ import Exceptions.BadYearException;
 
 public class BookManager {
     public static void main(String args[]) {
-        do_part1();
-        do_part2();
+        // do_part1();
+        // do_part2();
+        do_part3();
+    }
+
+    private static File currentViewFile = null;
+    private static Book[] currentFileBooks;
+
+    static void do_part3() {
+        readFile(0);
+        mainMenu();
+    }
+
+    private static void readFile(int fileIndex) {
+        File outputFolder = new File("part2_output_files");
+        File[] listOfFiles = outputFolder.listFiles();
+
+        if (listOfFiles != null) {
+            for (int i = 0; i < listOfFiles.length; i++) {
+                if (i == fileIndex) {
+                    currentViewFile = listOfFiles[i];
+                }
+            }
+        } else {
+            System.out.println("No files in directory.");
+        }
+
+        int numOfBooks = 0;
+        // ObjectInputStream readBooks;
+        System.out.println(currentViewFile.getName());
+        try {
+            ObjectInputStream readBooks = new ObjectInputStream(new FileInputStream(currentViewFile));
+            // readBooks = new ObjectInputStream(new FileInputStream("Nostalgia_Eclectic_Books.csv.ser"));
+            try {
+                while (true) {
+                    Book tempBook = (Book) readBooks.readObject();
+                    numOfBooks++;
+                }
+            } catch (EOFException e) {
+
+            }
+            readBooks.close();
+        } catch (Exception e) {
+            System.out.println("File not found");
+        }
+        System.out.println("Number of books: " + numOfBooks);
+        currentFileBooks = new Book[numOfBooks];
+        
+        try {
+            ObjectInputStream readBookRecords = new ObjectInputStream(new FileInputStream(currentViewFile));
+            int index = 0;
+            try {
+                while (true) {
+                    Book tempBook = (Book) readBookRecords.readObject();
+                    currentFileBooks[index] = tempBook;
+                    index++;
+                    System.out.println("Book added: " + tempBook.title);
+                }
+            } catch (EOFException e) {
+                System.out.println("File not found");
+            }
+            readBookRecords.close();
+        } catch (Exception e) {
+            System.out.println("File not found");
+        }
+    }
+
+    static void mainMenu() {
+        System.out.println("-----------------------------");
+        System.out.println("Main Menu");
+        System.out.println("-----------------------------");
+        System.out.println("v  View the selected file: " + currentViewFile.getName() + " (" + "records)");
+        System.out.println("s  Select a file to view");
+        System.out.println("x  Exit");
+        System.out.print("----------------------------- Enter Your Choice: ");
+        Scanner scanner = new Scanner(System.in);
+        String userOption = scanner.next();
+        switch (userOption) {
+            case "v":
+                viewFile();
+                break;
+            case "s":
+                selectFile();
+                break;
+            case "x":
+                System.exit(0);
+        }
+        scanner.close();
+    }
+
+    private static void selectFile() {
+        System.out.println("In select file");
+    }
+
+    private static void viewFile() {
+        System.out.println("In view file");
     }
 
     /**
-     * Reads input files containing book records, validates each record, 
-     * and adds valid records to output files. Logs syntax errors to a 
+     * Reads input files containing book records, validates each record,
+     * and adds valid records to output files. Logs syntax errors to a
      * separate error log file.
      */
     static void do_part1() {
@@ -31,7 +128,8 @@ public class BookManager {
 
         // read input files file
         try {
-            scanner = new Scanner(new FileInputStream("part1_helper_files" + File.separator + "Part1_input_file_names.txt"));
+            scanner = new Scanner(
+                    new FileInputStream("part1_helper_files" + File.separator + "Part1_input_file_names.txt"));
             int numberOfFiles = scanner.nextInt();
             scanner.nextLine();
 
@@ -48,7 +146,7 @@ public class BookManager {
             try {
                 String errorMessage = "";
                 boolean firstError = true;
-                scanner = new Scanner(new FileInputStream("part1_helper_files" + File.separator +  bookRecordsNames[i]));
+                scanner = new Scanner(new FileInputStream("part1_helper_files" + File.separator + bookRecordsNames[i]));
                 while (scanner.hasNext()) {
                     String bookRecord = scanner.nextLine();
                     String bookRecordTokens[] = tokenizeBookRecord(bookRecord);
@@ -67,11 +165,11 @@ public class BookManager {
     }
 
     /**
-    * Adds the given book record to the specified genre output file.
-    *
-    * @param bookRecord the book record to add
-    * @param genre      the genre of the book record
-    */
+     * Adds the given book record to the specified genre output file.
+     *
+     * @param bookRecord the book record to add
+     * @param genre      the genre of the book record
+     */
     static void addRecordToFile(String bookRecord, String genre) {
         String fileName;
         switch (genre) {
@@ -118,9 +216,9 @@ public class BookManager {
     /**
      * Logs a syntax error to the error log file.
      *
-     * @param error the error message
+     * @param error      the error message
      * @param firstError a flag indicating if this is the first error for the file
-     * @param fileName the name of the file containing the error
+     * @param fileName   the name of the file containing the error
      */
     private static void logSyntaxErrorToFile(String error, boolean firstError, String fileName) {
         PrintWriter writer = null;
@@ -144,10 +242,11 @@ public class BookManager {
     /**
      * Validates the given book record for syntax errors.
      *
-     * @param bookRecordFile the name of the input file containing the book record
+     * @param bookRecordFile   the name of the input file containing the book record
      * @param bookRecordTokens the tokens of the book record
-     * @param bookRecord the book record
-     * @param firstError a flag indicating if this is the first error for the file
+     * @param bookRecord       the book record
+     * @param firstError       a flag indicating if this is the first error for the
+     *                         file
      * @return true if the book record is valid, false otherwise
      */
     static boolean validateBookRecord(String bookRecordFile, String[] bookRecordTokens, String bookRecord,
@@ -171,9 +270,10 @@ public class BookManager {
      * Validates missing fields in the book record.
      *
      * @param bookRecordTokens the tokens of the book record
-     * @param bookRecord the book record
-     * @param bookRecordFile the name of the input file containing the book record
-     * @param firstError a flag indicating if this is the first error for the file
+     * @param bookRecord       the book record
+     * @param bookRecordFile   the name of the input file containing the book record
+     * @param firstError       a flag indicating if this is the first error for the
+     *                         file
      * @return true if all required fields are present, false otherwise
      */
     static boolean validateMissingFields(String[] bookRecordTokens, String bookRecord, String bookRecordFile,
@@ -218,9 +318,10 @@ public class BookManager {
      * Validates the genre of the book record.
      *
      * @param bookRecordTokens the tokens of the book record
-     * @param bookRecord the book record
-     * @param bookRecordFile the name of the input file containing the book record
-     * @param firstError a flag indicating if this is the first error for the file
+     * @param bookRecord       the book record
+     * @param bookRecordFile   the name of the input file containing the book record
+     * @param firstError       a flag indicating if this is the first error for the
+     *                         file
      * @return true if the genre is valid, false otherwise
      */
     static boolean isGenreValid(String[] bookRecordTokens, String bookRecord, String bookRecordFile,
@@ -354,10 +455,6 @@ public class BookManager {
                 e.printStackTrace();
             }
         }
-    }
-
-    static void do_part3() {
-    
     }
 
     private static void logSemanticExceptionToFile(String error) {

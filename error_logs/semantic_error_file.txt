@@ -98,3 +98,103 @@ Record: "The Picture of Dorian Gray", Oscar Wilde, 8.80, 9780141442464, TPA, 189
 Error: invalid year
 Record: "The Brothers Karamazov", Fyodor Dostoevsky, 10.75, 9780374528379, TPA, 1880
 
+Semantic error in file: Cartoons_Comics.csv
+====================
+Error: invalid year
+Record: "The Great Gatsby", F. Scott Fitzgerald, 9.99, 9780743273565, CCB, 1925
+
+Error: invalid year
+Record: "The Alchemist", Paulo Coelho, 9.50, 9780062315007, CCB, 1988
+
+Error: invalid year
+Record: "Dracula", Bram Stoker, 7.85, 9780141439846, CCB, 1897
+
+Error: invalid year
+Record: "Of Mice and Men", John Steinbeck, 7.25, 9780140177398, CCB, 1937
+
+Semantic error in file: Hobbies_Collectibles.csv
+====================
+Error: invalid year
+Record: "1984", George Orwell, 8.95, 9780451524935, HCB, 1949
+
+Error: invalid year
+Record: "Brave New World", Aldous Huxley, 10.99, 9780060850524, HCB, 1932
+
+Error: invalid year
+Record: "Lord of the Flies", William Golding, 8.99, 9780571191475, HCB, 1954
+
+Error: invalid year
+Record: "Moby-Dick", Herman Melville, 14.25, 9780142437247, HCB, 1851
+
+Semantic error in file: Movies_TV_Books.csv
+====================
+Error: invalid year
+Record: "Pride and Prejudice", Jane Austen, 7.99, 9780141439518, MTV, 1813
+
+Error: invalid year
+Record: "Frankenstein", Mary Shelley, 6.99, 9780486282114, MTV, 1818
+
+Error: invalid year
+Record: "Middlemarch", George Eliot, 11.90, 9780143107729, MTV, 1871
+
+Semantic error in file: Music_Radio_Books.csv
+====================
+Error: invalid year
+Record: "The Catcher in the Rye", J.D. Salinger, 11.25, 9780316769488, MRB, 1951
+
+Error: invalid year
+Record: "The Bell Jar", Sylvia Plath, 10.10, 9780061148514, MRB, 1963
+
+Semantic error in file: Nostalgia_Eclectic_Books.csv
+====================
+Error: invalid year
+Record: "To Kill a Mockingbird", Harper Lee, 10.50, 9780061120084, NEB, 1960
+
+Error: invalid year
+Record: "Jane Eyre", Charlotte Bronte, 7.75, 9780141441146, NEB, 1847
+
+Error: invalid year
+Record: "The Metamorphosis", Franz Kafka, 6.65, 9780553213690, NEB, 1915
+
+Error: invalid year
+Record: "Les Miserables", Victor Hugo, 12.95, 9780140444308, NEB, 1862
+
+Error: invalid year
+Record: "The Secret Garden", Frances Hodgson Burnett, 6.40, 9780486275567, NEB, 1911
+
+Semantic error in file: Old_Time_Radio_Books.csv
+====================
+Error: invalid year
+Record: "Animal Farm", George Orwell, 7.95, 9780452284241, OTR, 1945
+
+Error: invalid year
+Record: "Crime and Punishment", Fyodor Dostoevsky, 11.49, 9780140449136, OTR, 1866
+
+Error: invalid year
+Record: "The Road Less Traveled", M. Scott Peck, 9.20, 9780743243155, OTR, 1978
+
+Semantic error in file: Sports_Sports_Memorabilia.csv
+====================
+Error: invalid year
+Record: "The Hobbit", J.R.R. Tolkien, 14.99, 9780345534835, SSM, 1937
+
+Error: invalid year
+Record: "Wuthering Heights", Emily Bronte, 9.95, 9780141439556, SSM, 1847
+
+Error: invalid year
+Record: "The Scarlet Letter", Nathaniel Hawthorne, 7.90, 9780142437261, SSM, 1850
+
+Semantic error in file: Trains_Planes_Automobiles.csv
+====================
+Error: invalid year
+Record: "To Kill a Mockingbird", Harper Lee, 10.50, 9780061120084, TPA, 1960
+
+Error: invalid year
+Record: "The Lord of the Rings", J.R.R. Tolkien, 24.99, 9780544003415, TPA, 1954
+
+Error: invalid year
+Record: "The Picture of Dorian Gray", Oscar Wilde, 8.80, 9780141442464, TPA, 1890
+
+Error: invalid year
+Record: "The Brothers Karamazov", Fyodor Dostoevsky, 10.75, 9780374528379, TPA, 1880
+
