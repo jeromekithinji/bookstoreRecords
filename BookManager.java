@@ -48,6 +48,7 @@ public class BookManager {
             System.out.println("File not found");
         }
 
+        String[][] genreCounts = {{"CCB", "0"}, {"HCB", "0"}, {"MTV", "0"}, {"MRB", "0"}, {"NEB", "0"}, {"OTR", "0"}, {"SSM", "0"}, {"TPA", "0"}};
         // read the book record files
         for (int i = 0; i < bookRecordsNames.length; i++) {
             try {
@@ -59,6 +60,13 @@ public class BookManager {
                     String bookRecordTokens[] = tokenizeBookRecord(bookRecord);
                     if (validateBookRecord(bookRecordsNames[i], bookRecordTokens, bookRecord, firstError)) {
                         addRecordToFile(bookRecord, bookRecordTokens[4]);
+                        for (String[] genre : genreCounts) {
+                            if (bookRecordTokens[4].equals(genre[0])) {
+                                int count = Integer.parseInt(genre[1]);
+                                genre[1] = String.valueOf(count + 1);
+                                break;
+                            }
+                        }
                     } else {
                         firstError = false;
                     }
@@ -67,6 +75,9 @@ public class BookManager {
             } catch (FileNotFoundException e) {
                 System.out.println("File not found");
             }
+        }
+        for (String[] genre : genreCounts) {
+            System.out.println(genre[0] + " = " + genre[1]);
         }
         scanner.close();
     }
