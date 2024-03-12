@@ -19,102 +19,9 @@ import Exceptions.BadYearException;
 
 public class BookManager {
     public static void main(String args[]) {
-        // do_part1();
-        // do_part2();
+        do_part1();
+        do_part2();
         do_part3();
-    }
-
-    private static File currentViewFile = null;
-    private static Book[] currentFileBooks;
-
-    static void do_part3() {
-        readFile(0);
-        mainMenu();
-    }
-
-    private static void readFile(int fileIndex) {
-        File outputFolder = new File("part2_output_files");
-        File[] listOfFiles = outputFolder.listFiles();
-
-        if (listOfFiles != null) {
-            for (int i = 0; i < listOfFiles.length; i++) {
-                if (i == fileIndex) {
-                    currentViewFile = listOfFiles[i];
-                }
-            }
-        } else {
-            System.out.println("No files in directory.");
-        }
-
-        int numOfBooks = 0;
-        // ObjectInputStream readBooks;
-        System.out.println(currentViewFile.getName());
-        try {
-            ObjectInputStream readBooks = new ObjectInputStream(new FileInputStream(currentViewFile));
-            // readBooks = new ObjectInputStream(new FileInputStream("Nostalgia_Eclectic_Books.csv.ser"));
-            try {
-                while (true) {
-                    Book tempBook = (Book) readBooks.readObject();
-                    numOfBooks++;
-                }
-            } catch (EOFException e) {
-
-            }
-            readBooks.close();
-        } catch (Exception e) {
-            System.out.println("File not found");
-        }
-        System.out.println("Number of books: " + numOfBooks);
-        currentFileBooks = new Book[numOfBooks];
-        
-        try {
-            ObjectInputStream readBookRecords = new ObjectInputStream(new FileInputStream(currentViewFile));
-            int index = 0;
-            try {
-                while (true) {
-                    Book tempBook = (Book) readBookRecords.readObject();
-                    currentFileBooks[index] = tempBook;
-                    index++;
-                    System.out.println("Book added: " + tempBook.title);
-                }
-            } catch (EOFException e) {
-                System.out.println("File not found");
-            }
-            readBookRecords.close();
-        } catch (Exception e) {
-            System.out.println("File not found");
-        }
-    }
-
-    static void mainMenu() {
-        System.out.println("-----------------------------");
-        System.out.println("Main Menu");
-        System.out.println("-----------------------------");
-        System.out.println("v  View the selected file: " + currentViewFile.getName() + " (" + "records)");
-        System.out.println("s  Select a file to view");
-        System.out.println("x  Exit");
-        System.out.print("----------------------------- Enter Your Choice: ");
-        Scanner scanner = new Scanner(System.in);
-        String userOption = scanner.next();
-        switch (userOption) {
-            case "v":
-                viewFile();
-                break;
-            case "s":
-                selectFile();
-                break;
-            case "x":
-                System.exit(0);
-        }
-        scanner.close();
-    }
-
-    private static void selectFile() {
-        System.out.println("In select file");
-    }
-
-    private static void viewFile() {
-        System.out.println("In view file");
     }
 
     /**
@@ -165,6 +72,274 @@ public class BookManager {
     }
 
     /**
+     * Reads the genre-based CVS-formatted input text files produced in Part 1, one
+     * file at a time, creating an array of valid Book objects out of all the
+     * semantically valid book records in each input file, then serializes the
+     * resulting array of Book objects into the genre's binary file
+     */
+    static void do_part2() {
+        String[] p1OutputFiles = {
+                "Cartoons_Comics.csv",
+                "Hobbies_Collectibles.csv",
+                "Movies_TV_Books.csv",
+                "Music_Radio_Books.csv",
+                "Nostalgia_Eclectic_Books.csv",
+                "Old_Time_Radio_Books.csv",
+                "Sports_Sports_Memorabilia.csv",
+                "Trains_Planes_Automobiles.csv"
+        };
+
+        for (int i = 0; i < p1OutputFiles.length; i++) {
+            ArrayList<Book> validBooks = new ArrayList<Book>();
+
+            try (Scanner scanner = new Scanner(
+                    new FileInputStream("part1_output_files" + File.separator + p1OutputFiles[i]))) {
+
+                boolean firstErrorFoundInFile = false;
+
+                while (scanner.hasNextLine()) {
+                    String bookRecord = scanner.nextLine();
+                    String[] splitBookRecord = bookRecord.split(",");
+
+                    String title = splitBookRecord[0].trim();
+                    String author = splitBookRecord[1].trim();
+                    double price = Double.parseDouble(splitBookRecord[2].trim());
+                    String isbn = splitBookRecord[3].trim();
+                    String genre = splitBookRecord[4].trim();
+                    int year = Integer.parseInt(splitBookRecord[5].trim());
+
+                    Boolean isValidIsbn = false;
+                    Boolean isValidYear = false;
+                    Boolean isValidPrice = false;
+
+                    if (isbn.length() == 10)
+                        isValidIsbn = isValidIsbn10(isbn);
+                    else if (isbn.length() == 13)
+                        isValidIsbn = isValidIsbn13(isbn);
+
+                    isValidYear = isValidYear(year);
+                    isValidPrice = isValidPrice(price);
+
+                    String errorPrefix = firstErrorFoundInFile == false
+                            ? "Semantic error in file: " + p1OutputFiles[i] + "\n====================\n"
+                            : "";
+
+                    if (!isValidIsbn || !isValidPrice || !isValidYear)
+                        firstErrorFoundInFile = true;
+
+                    if (!isValidIsbn && isbn.length() == 10) {
+                        logSemanticExceptionToFile(
+                                errorPrefix + "Error: invalid ISBN-10\nRecord: " + bookRecord + "\n");
+                    } else if (!isValidIsbn && isbn.length() == 13) {
+                        firstErrorFoundInFile = true;
+                        logSemanticExceptionToFile(
+                                errorPrefix + "Error: invalid ISBN-13\nRecord: " + bookRecord + "\n");
+                    }
+
+                    // checks if year is valid
+                    if (!isValidYear) {
+                        logSemanticExceptionToFile(errorPrefix + "Error: invalid year\nRecord: " + bookRecord + "\n");
+                    }
+                    // checks if price is valid
+                    if (!isValidPrice) {
+                        logSemanticExceptionToFile(errorPrefix + "Error: invalid price\nRecord: " + bookRecord + "\n");
+                    }
+
+                    // checks if the book has all valid fields and creates a Book object, then
+                    // pushes the object into the Book array
+                    if (isValidIsbn && isValidPrice && isValidYear) {
+                        Book bookObj = new Book(title, author, price, isbn, genre, year);
+                        validBooks.add(bookObj);
+                    }
+                }
+
+                // Write the array of valid books to their respective genre binary files
+                try (ObjectOutputStream outputStream = new ObjectOutputStream(
+                        new FileOutputStream("part2_output_files" + File.separator + p1OutputFiles[i] + ".ser"))) {
+                    outputStream.writeInt(validBooks.size());
+                    outputStream.writeObject(validBooks);
+
+                } catch (FileNotFoundException e) {
+                    System.out.println("Unable to create " + p1OutputFiles[i] + " binary File.");
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    System.out.println("Unable to write to " + p1OutputFiles[i] + " binary File.");
+                    e.printStackTrace();
+                }
+
+            } catch (FileNotFoundException e) {
+                System.out.println("File not found");
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void do_part3() {
+        try (Scanner scanner = new Scanner(System.in);) {
+            File outputFolder = new File("part2_output_files");
+            File[] listOfFiles = outputFolder.listFiles();
+
+            File currentFile = listOfFiles[0];
+            ArrayList<Book> currentFileBooks = openBinaryFile(currentFile.getName());
+
+            String userOption = "";
+
+            while (userOption != "x") {
+                if (userOption.equals("")) {
+                    System.out.println("\n-----------------------------");
+                    System.out.println("\tMain Menu");
+                    System.out.println("-----------------------------\n");
+                    System.out
+                            .println("v  View the selected file: " + currentFile.getName() + " ("
+                                    + currentFileBooks.size()
+                                    + " records)");
+                    System.out.println("s  Select a file to view");
+                    System.out.println("x  Exit");
+                    System.out.print("----------------------------- \n\nEnter Your Choice: ");
+
+
+                    userOption = scanner.nextLine();
+                } else if (userOption.equals("x")) {
+                    System.out.println("Closing Program...");
+                    break;
+                } else if (userOption.equals("s")) {
+                    System.out.println("\n------------------------------\n" +
+                            "\tFile Sub-Menu\n" +
+                            "------------------------------\n");
+
+                    for (int i = 0; i < listOfFiles.length; i++) {
+                        System.out.println((i + 1) + " " + listOfFiles[i].getName() + " ("
+                                + openBinaryFile(listOfFiles[i].getName()).size() + " records)");
+                    }
+
+                    System.out.println(listOfFiles.length + 1 + " Exit");
+                    System.out.print("Enter Your Choice: ");
+                    userOption = scanner.nextLine();
+
+                    if (Integer.parseInt(userOption) == listOfFiles.length + 1) {
+                        System.out.println("\nClosing sub menu...\n");
+                        userOption = "";
+
+                        continue;
+                    } else if (Integer.parseInt(userOption) > listOfFiles.length || Integer.parseInt(userOption) <= 0) {
+                        System.out.println("\nInvalid option. Try again.\n");
+
+                        userOption = "s";
+                        continue;
+                    } else {
+                        currentFile = listOfFiles[Integer.parseInt(userOption) - 1];
+                        currentFileBooks = openBinaryFile(currentFile.getName());
+
+                        userOption = "";
+                        continue;
+                    }
+                } else if (userOption.equals("v")) {
+                    System.out.println("viewing current file " + currentFile.getName());
+                    System.out.println(currentFileBooks.toString());  // the book array for to search through
+
+                    // write code to view file based on user supplied range
+
+                    userOption = ""; // ensure to set userOption to empty string when user is done viewing contents of file
+                    continue;
+                } else {
+                    System.out.println("\nInvalid Option.\n");
+                    userOption = "";
+                    continue;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    // Auxiliary methods
+    private static ArrayList<Book> openBinaryFile(String filename) {
+        ArrayList<Book> genreBooks = null;
+
+        try (ObjectInputStream outputStream = new ObjectInputStream(
+                new FileInputStream("part2_output_files" + File.separator + filename))) {
+
+            int genreRecordCount = outputStream.readInt();
+            genreBooks = (ArrayList<Book>) outputStream.readObject();
+
+            return genreBooks;
+
+        } catch (ClassNotFoundException e) {
+            System.out.println("Class not found.");
+            e.printStackTrace();
+        } catch (EOFException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            // TODO: handle exception
+            System.out.println("Unable to read binary file: " + filename);
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("");
+            e.printStackTrace();
+        }
+
+        return genreBooks;
+    }
+
+    private static void logSemanticExceptionToFile(String error) {
+        try (PrintWriter writer = new PrintWriter(
+                new FileOutputStream("error_logs" + File.separator + "semantic_error_file.txt", true))) {
+            writer.println(error);
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to open semantic_error_file.txt");
+            e.printStackTrace();
+        }
+    }
+
+    static boolean isValidPrice(double price) {
+        return price > 0 ? true : false;
+    }
+
+    static boolean isValidYear(int year) {
+        return (year >= 1995 && year <= 2024);
+    }
+
+    /**
+     * Validates the semantic correctness of the ISBN 10.
+     * 
+     * @param isbn the string ISBN of the book to validate
+     * @return True if ISBN 10 is valid, false otherwise.
+     */
+    static boolean isValidIsbn10(String isbn) {
+        if (isbn.length() != 10)
+            return false;
+        int isbnSum = 0;
+
+        for (int i = 10; i > 0; i--) {
+            isbnSum += i * Integer.parseInt(Character.toString(isbn.charAt(isbn.length() - i)));
+        }
+        return isbnSum % 11 == 0;
+    }
+
+    /**
+     * Validates the semantic correctness of the isbn13 argument.
+     * 
+     * @param isbn the ISBN of the book to validate
+     * @return True if ISBN 13 is valid, false otherwise
+     */
+    static boolean isValidIsbn13(String isbn) {
+        if (isbn.length() != 13)
+            return false;
+        int isbnSum = 0;
+
+        for (int i = 1; i <= isbn.length(); i++) {
+            if (i % 2 == 0) {
+                isbnSum += 3 * Integer.parseInt(Character.toString(isbn.charAt(i - 1)));
+            } else {
+                isbnSum += Integer.parseInt(Character.toString(isbn.charAt(i - 1)));
+            }
+        }
+        return isbnSum % 10 == 0;
+    }
+
+
+        /**
      * Adds the given book record to the specified genre output file.
      *
      * @param bookRecord the book record to add
@@ -354,162 +529,5 @@ public class BookManager {
             tokens[i] = tokens[i].replaceAll("^\"|\"$", "");
         }
         return tokens;
-    }
-
-    /**
-     * Reads the genre-based CVS-formatted input text files produced in Part 1, one
-     * file at a time, creating an array of valid Book objects out of all the
-     * semantically valid book records in each input file, then serializes the
-     * resulting array of Book objects into the genre's binary file
-     */
-    static void do_part2() {
-        String[] p1OutputFiles = {
-                "Cartoons_Comics.csv",
-                "Hobbies_Collectibles.csv",
-                "Movies_TV_Books.csv",
-                "Music_Radio_Books.csv",
-                "Nostalgia_Eclectic_Books.csv",
-                "Old_Time_Radio_Books.csv",
-                "Sports_Sports_Memorabilia.csv",
-                "Trains_Planes_Automobiles.csv"
-        };
-
-        for (int i = 0; i < p1OutputFiles.length; i++) {
-            ArrayList<Book> validBooks = new ArrayList<Book>();
-
-            try (Scanner scanner = new Scanner(
-                    new FileInputStream("part1_output_files" + File.separator + p1OutputFiles[i]))) {
-
-                boolean firstErrorFoundInFile = false;
-
-                while (scanner.hasNextLine()) {
-                    String bookRecord = scanner.nextLine();
-                    String[] splitBookRecord = bookRecord.split(",");
-
-                    String title = splitBookRecord[0].trim();
-                    String author = splitBookRecord[1].trim();
-                    double price = Double.parseDouble(splitBookRecord[2].trim());
-                    String isbn = splitBookRecord[3].trim();
-                    String genre = splitBookRecord[4].trim();
-                    int year = Integer.parseInt(splitBookRecord[5].trim());
-
-                    Boolean isValidIsbn = false;
-                    Boolean isValidYear = false;
-                    Boolean isValidPrice = false;
-
-                    if (isbn.length() == 10)
-                        isValidIsbn = isValidIsbn10(isbn);
-                    else if (isbn.length() == 13)
-                        isValidIsbn = isValidIsbn13(isbn);
-
-                    isValidYear = isValidYear(year);
-                    isValidPrice = isValidPrice(price);
-
-                    String errorPrefix = firstErrorFoundInFile == false
-                            ? "Semantic error in file: " + p1OutputFiles[i] + "\n====================\n"
-                            : "";
-
-                    if (!isValidIsbn || !isValidPrice || !isValidYear)
-                        firstErrorFoundInFile = true;
-
-                    if (!isValidIsbn && isbn.length() == 10) {
-                        logSemanticExceptionToFile(
-                                errorPrefix + "Error: invalid ISBN-10\nRecord: " + bookRecord + "\n");
-                    } else if (!isValidIsbn && isbn.length() == 13) {
-                        firstErrorFoundInFile = true;
-                        logSemanticExceptionToFile(
-                                errorPrefix + "Error: invalid ISBN-13\nRecord: " + bookRecord + "\n");
-                    }
-
-                    // checks if year is valid
-                    if (!isValidYear) {
-                        logSemanticExceptionToFile(errorPrefix + "Error: invalid year\nRecord: " + bookRecord + "\n");
-                    }
-                    // checks if price is valid
-                    if (!isValidPrice) {
-                        logSemanticExceptionToFile(errorPrefix + "Error: invalid price\nRecord: " + bookRecord + "\n");
-                    }
-
-                    // checks if the book has all valid fields and creates a Book object, then
-                    // pushes the object into the Book array
-                    if (isValidIsbn && isValidPrice && isValidYear) {
-                        Book bookObj = new Book(title, author, price, isbn, genre, year);
-                        validBooks.add(bookObj);
-                    }
-                }
-
-                // Write the array of valid books to their respective genre binary files
-                try (ObjectOutputStream outputStream = new ObjectOutputStream(
-                        new FileOutputStream("part2_output_files" + File.separator + p1OutputFiles[i] + ".ser"))) {
-                    outputStream.writeObject(validBooks);
-                } catch (FileNotFoundException e) {
-                    System.out.println("Unable to create " + p1OutputFiles[i] + " binary File.");
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    System.out.println("Unable to write to " + p1OutputFiles[i] + " binary File.");
-                    e.printStackTrace();
-                }
-
-            } catch (FileNotFoundException e) {
-                System.out.println("File not found");
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private static void logSemanticExceptionToFile(String error) {
-        try (PrintWriter writer = new PrintWriter(
-                new FileOutputStream("error_logs" + File.separator + "semantic_error_file.txt", true))) {
-            writer.println(error);
-        } catch (FileNotFoundException e) {
-            System.out.println("Unable to open semantic_error_file.txt");
-            e.printStackTrace();
-        }
-    }
-
-    static boolean isValidPrice(double price) {
-        return price > 0 ? true : false;
-    }
-
-    static boolean isValidYear(int year) {
-        return (year >= 1995 && year <= 2024);
-    }
-
-    /**
-     * Validates the semantic correctness of the ISBN 10.
-     * 
-     * @param isbn the string ISBN of the book to validate
-     * @return True if ISBN 10 is valid, false otherwise.
-     */
-    static boolean isValidIsbn10(String isbn) {
-        if (isbn.length() != 10)
-            return false;
-        int isbnSum = 0;
-
-        for (int i = 10; i > 0; i--) {
-            isbnSum += i * Integer.parseInt(Character.toString(isbn.charAt(isbn.length() - i)));
-        }
-        return isbnSum % 11 == 0;
-    }
-
-    /**
-     * Validates the semantic correctness of the isbn13 argument.
-     * 
-     * @param isbn the ISBN of the book to validate
-     * @return True if ISBN 13 is valid, false otherwise
-     */
-    static boolean isValidIsbn13(String isbn) {
-        if (isbn.length() != 13)
-            return false;
-        int isbnSum = 0;
-
-        for (int i = 1; i <= isbn.length(); i++) {
-            if (i % 2 == 0) {
-                isbnSum += 3 * Integer.parseInt(Character.toString(isbn.charAt(i - 1)));
-            } else {
-                isbnSum += Integer.parseInt(Character.toString(isbn.charAt(i - 1)));
-            }
-        }
-        return isbnSum % 10 == 0;
     }
 }
