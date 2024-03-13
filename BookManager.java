@@ -19,8 +19,8 @@ import Exceptions.BadYearException;
 
 public class BookManager {
     public static void main(String args[]) {
-        do_part1();
-        do_part2();
+        // do_part1();
+        // do_part2();
         do_part3();
     }
 
@@ -48,7 +48,8 @@ public class BookManager {
             System.out.println("File not found");
         }
 
-        String[][] genreCounts = {{"CCB", "0"}, {"HCB", "0"}, {"MTV", "0"}, {"MRB", "0"}, {"NEB", "0"}, {"OTR", "0"}, {"SSM", "0"}, {"TPA", "0"}};
+        String[][] genreCounts = { { "CCB", "0" }, { "HCB", "0" }, { "MTV", "0" }, { "MRB", "0" }, { "NEB", "0" },
+                { "OTR", "0" }, { "SSM", "0" }, { "TPA", "0" } };
         // read the book record files
         for (int i = 0; i < bookRecordsNames.length; i++) {
             try {
@@ -60,13 +61,13 @@ public class BookManager {
                     String bookRecordTokens[] = tokenizeBookRecord(bookRecord);
                     if (validateBookRecord(bookRecordsNames[i], bookRecordTokens, bookRecord, firstError)) {
                         addRecordToFile(bookRecord, bookRecordTokens[4]);
-                        for (String[] genre : genreCounts) {
-                            if (bookRecordTokens[4].equals(genre[0])) {
-                                int count = Integer.parseInt(genre[1]);
-                                genre[1] = String.valueOf(count + 1);
-                                break;
-                            }
-                        }
+                        // for (String[] genre : genreCounts) {
+                        //     if (bookRecordTokens[4].equals(genre[0])) {
+                        //         int count = Integer.parseInt(genre[1]);
+                        //         genre[1] = String.valueOf(count + 1);
+                        //         break;
+                        //     }
+                        // }
                     } else {
                         firstError = false;
                     }
@@ -208,7 +209,6 @@ public class BookManager {
                     System.out.println("x  Exit");
                     System.out.print("----------------------------- \n\nEnter Your Choice: ");
 
-
                     userOption = scanner.nextLine();
                 } else if (userOption.equals("x")) {
                     System.out.println("Closing Program...");
@@ -245,12 +245,47 @@ public class BookManager {
                         continue;
                     }
                 } else if (userOption.equals("v")) {
-                    System.out.println("viewing current file " + currentFile.getName());
-                    System.out.println(currentFileBooks.toString());  // the book array for to search through
+                    System.out.println("Viewing: " + currentFile.getName());
+                    Book currentBook = currentFileBooks.getFirst();
+                    int viewCommand = 0;
+                    System.out.print("Enter View Command: ");
+                    viewCommand = Integer.parseInt(scanner.nextLine());
 
-                    // write code to view file based on user supplied range
+                    while (viewCommand != 0) {
+                        System.out.println(currentFileBooks.toString());
+                        int currentBookIndex = currentFileBooks.indexOf(currentBook);
+                        if (viewCommand == 1 || viewCommand == -1) {
+                            System.out.println(currentBook);
+                        } else if (viewCommand > 0) {
+                            for (int i = 0; i < viewCommand; i++) {
+                                if (currentBookIndex + i < currentFileBooks.size()) {
+                                    System.out.println(currentFileBooks.get(currentBookIndex + i));
+                                } else {
+                                    System.out.println("EOF has been reached");
+                                    break;
+                                }
+                            }
+                            // move current index to last displayed book or last book in the list depending whichever comes first
+                            currentBookIndex = Math.min(currentBookIndex + viewCommand - 1, currentFileBooks.size() - 1);
+                            currentBook = currentFileBooks.get(currentBookIndex);
+                        } else if (viewCommand < 0) {
+                            int n = Math.abs(viewCommand) - 1; // calculate |n| - 1
+                            int startIndex = Math.max(currentBookIndex - n, 0); // ensures it does not go below 0
+                            if (startIndex < currentBookIndex - n) {
+                                System.out.println("BOF has been reached");
+                            }
 
-                    userOption = ""; // ensure to set userOption to empty string when user is done viewing contents of file
+                            for (int i = startIndex; i <= currentBookIndex; i++) {
+                                System.out.println(currentFileBooks.get(i));
+                            }
+
+                            currentBookIndex = startIndex;
+                            currentBook = currentFileBooks.get(currentBookIndex);
+                        }
+                        System.out.print("Enter View Command: ");
+                        viewCommand = Integer.parseInt(scanner.nextLine());
+                    }
+                    userOption = "";
                     continue;
                 } else {
                     System.out.println("\nInvalid Option.\n");
@@ -349,8 +384,7 @@ public class BookManager {
         return isbnSum % 10 == 0;
     }
 
-
-        /**
+    /**
      * Adds the given book record to the specified genre output file.
      *
      * @param bookRecord the book record to add
