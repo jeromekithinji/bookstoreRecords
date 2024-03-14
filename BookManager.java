@@ -16,12 +16,16 @@ import Exceptions.BadIsbn10Exception;
 import Exceptions.BadIsbn13Exception;
 import Exceptions.BadPriceException;
 import Exceptions.BadYearException;
+import Exceptions.MissingFieldException;
+import Exceptions.TooFewFieldsException;
+import Exceptions.TooManyFieldsException;
+import Exceptions.UnknownGenreException;
 
 public class BookManager {
     public static void main(String args[]) {
-        // do_part1();
-        // do_part2();
-        do_part3();
+        do_part1();
+        do_part2();
+        // do_part3();
     }
 
     /**
@@ -59,7 +63,8 @@ public class BookManager {
                 while (scanner.hasNext()) {
                     String bookRecord = scanner.nextLine();
                     String bookRecordTokens[] = tokenizeBookRecord(bookRecord);
-                    if (validateBookRecord(bookRecordsNames[i], bookRecordTokens, bookRecord, firstError)) {
+                    try {
+                        validateBookRecord(bookRecordsNames[i], bookRecordTokens, bookRecord, firstError);
                         addRecordToFile(bookRecord, bookRecordTokens[4]);
                         // for (String[] genre : genreCounts) {
                         //     if (bookRecordTokens[4].equals(genre[0])) {
@@ -68,7 +73,8 @@ public class BookManager {
                         //         break;
                         //     }
                         // }
-                    } else {
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
                         firstError = false;
                     }
                 }
@@ -77,9 +83,9 @@ public class BookManager {
                 System.out.println("File not found");
             }
         }
-        for (String[] genre : genreCounts) {
-            System.out.println(genre[0] + " = " + genre[1]);
-        }
+        // for (String[] genre : genreCounts) {
+        //     System.out.println(genre[0] + " = " + genre[1]);
+        // }
         scanner.close();
     }
 
@@ -186,6 +192,11 @@ public class BookManager {
         }
     }
 
+    /**
+     * Reads the genre-based binary files produced in part 1, deserializes the array of 
+     * Book objects in each file and provides an interacive program to allow the user to 
+     * navigate the arrays.
+     */
     public static void do_part3() {
         try (Scanner scanner = new Scanner(System.in);) {
             File outputFolder = new File("part2_output_files");
@@ -469,20 +480,21 @@ public class BookManager {
      *                         file
      * @return true if the book record is valid, false otherwise
      */
-    static boolean validateBookRecord(String bookRecordFile, String[] bookRecordTokens, String bookRecord,
-            boolean firstError) {
+    static void validateBookRecord(String bookRecordFile, String[] bookRecordTokens, String bookRecord,
+            boolean firstError) throws TooManyFieldsException, TooFewFieldsException, MissingFieldException, UnknownGenreException {
         if (bookRecordTokens.length > 6) {
             logSyntaxErrorToFile("Error: too many fields\nRecord: " + bookRecord + "\n", firstError, bookRecordFile);
-            return false;
+            throw new TooManyFieldsException("Too many fields");
         } else if (bookRecordTokens.length < 5) {
             logSyntaxErrorToFile("Error: too few fields\nRecord: " + bookRecord + "\n", firstError, bookRecordFile);
-            return false;
+            throw new TooFewFieldsException("Too few fields");
         } else {
             if (!validateMissingFields(bookRecordTokens, bookRecord, bookRecordFile, firstError)) {
-                return false;
-            } else {
-                return isGenreValid(bookRecordTokens, bookRecord, bookRecordFile, firstError);
+                throw new TooFewFieldsException("Missing field");
             }
+            if (!isGenreValid(bookRecordTokens, bookRecord, bookRecordFile, firstError)) {
+                throw new UnknownGenreException("Unknown genre");
+            } 
         }
     }
 
@@ -494,6 +506,7 @@ public class BookManager {
      * @param bookRecordFile   the name of the input file containing the book record
      * @param firstError       a flag indicating if this is the first error for the
      *                         file
+     * 
      * @return true if all required fields are present, false otherwise
      */
     static boolean validateMissingFields(String[] bookRecordTokens, String bookRecord, String bookRecordFile,
@@ -542,6 +555,7 @@ public class BookManager {
      * @param bookRecordFile   the name of the input file containing the book record
      * @param firstError       a flag indicating if this is the first error for the
      *                         file
+     * 
      * @return true if the genre is valid, false otherwise
      */
     static boolean isGenreValid(String[] bookRecordTokens, String bookRecord, String bookRecordFile,
