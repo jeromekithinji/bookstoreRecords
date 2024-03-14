@@ -19,8 +19,8 @@ import Exceptions.BadYearException;
 
 public class BookManager {
     public static void main(String args[]) {
-        // do_part1();
-        // do_part2();
+        do_part1();
+        do_part2();
         do_part3();
     }
 
@@ -246,13 +246,12 @@ public class BookManager {
                     }
                 } else if (userOption.equals("v")) {
                     System.out.println("Viewing: " + currentFile.getName());
-                    Book currentBook = currentFileBooks.getFirst();
+                    Book currentBook = currentFileBooks.get(0);
                     int viewCommand = 0;
                     System.out.print("Enter View Command: ");
                     viewCommand = Integer.parseInt(scanner.nextLine());
 
                     while (viewCommand != 0) {
-                        System.out.println(currentFileBooks.toString());
                         int currentBookIndex = currentFileBooks.indexOf(currentBook);
                         if (viewCommand == 1 || viewCommand == -1) {
                             System.out.println(currentBook);
@@ -296,7 +295,6 @@ public class BookManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     // Auxiliary methods
