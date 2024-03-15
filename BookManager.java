@@ -4,20 +4,24 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 import Exceptions.BadIsbn10Exception;
 import Exceptions.BadIsbn13Exception;
 import Exceptions.BadPriceException;
 import Exceptions.BadYearException;
+import Exceptions.MissingFieldException;
+import Exceptions.TooFewFieldsException;
+import Exceptions.TooManyFieldsException;
+import Exceptions.UnknownGenreException;
 
 public class BookManager {
+    static String[][] genreCounts = { { "CCB", "0" }, { "HCB", "0" }, { "MTV", "0" }, { "MRB", "0" }, { "NEB", "0" },
+            { "OTR", "0" }, { "SSM", "0" }, { "TPA", "0" } };
+
     public static void main(String args[]) {
         do_part1();
         do_part2();
@@ -48,17 +52,19 @@ public class BookManager {
             System.out.println("File not found");
         }
 
-        String[][] genreCounts = {{"CCB", "0"}, {"HCB", "0"}, {"MTV", "0"}, {"MRB", "0"}, {"NEB", "0"}, {"OTR", "0"}, {"SSM", "0"}, {"TPA", "0"}};
         // read the book record files
         for (int i = 0; i < bookRecordsNames.length; i++) {
             try {
+                System.out.println("\n");
                 String errorMessage = "";
                 boolean firstError = true;
                 scanner = new Scanner(new FileInputStream("part1_helper_files" + File.separator + bookRecordsNames[i]));
                 while (scanner.hasNext()) {
                     String bookRecord = scanner.nextLine();
                     String bookRecordTokens[] = tokenizeBookRecord(bookRecord);
-                    if (validateBookRecord(bookRecordsNames[i], bookRecordTokens, bookRecord, firstError)) {
+
+                    try {
+                        validateBookRecord(bookRecordsNames[i], bookRecordTokens, bookRecord, firstError);
                         addRecordToFile(bookRecord, bookRecordTokens[4]);
                         for (String[] genre : genreCounts) {
                             if (bookRecordTokens[4].equals(genre[0])) {
@@ -67,7 +73,8 @@ public class BookManager {
                                 break;
                             }
                         }
-                    } else {
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
                         firstError = false;
                     }
                 }
@@ -75,9 +82,6 @@ public class BookManager {
             } catch (FileNotFoundException e) {
                 System.out.println("File not found");
             }
-        }
-        for (String[] genre : genreCounts) {
-            System.out.println(genre[0] + " = " + genre[1]);
         }
         scanner.close();
     }
@@ -101,7 +105,10 @@ public class BookManager {
         };
 
         for (int i = 0; i < p1OutputFiles.length; i++) {
-            ArrayList<Book> validBooks = new ArrayList<Book>();
+            String syntaxValidBooksCount = genreCounts[i][1];
+            int semanticValidBookCounter = 0;
+
+            Book[] semanticallyValidBooks = new Book[Integer.parseInt(syntaxValidBooksCount)];
 
             try (Scanner scanner = new Scanner(
                     new FileInputStream("part1_output_files" + File.separator + p1OutputFiles[i]))) {
@@ -138,37 +145,55 @@ public class BookManager {
                     if (!isValidIsbn || !isValidPrice || !isValidYear)
                         firstErrorFoundInFile = true;
 
-                    if (!isValidIsbn && isbn.length() == 10) {
-                        logSemanticExceptionToFile(
-                                errorPrefix + "Error: invalid ISBN-10\nRecord: " + bookRecord + "\n");
-                    } else if (!isValidIsbn && isbn.length() == 13) {
-                        firstErrorFoundInFile = true;
-                        logSemanticExceptionToFile(
-                                errorPrefix + "Error: invalid ISBN-13\nRecord: " + bookRecord + "\n");
-                    }
+                    try {
+                        if (!isValidIsbn && isbn.length() == 10) {
+                            logSemanticExceptionToFile(
+                                    errorPrefix + "Error: invalid ISBN-10\nRecord: " + bookRecord + "\n");
+                            throw new BadIsbn10Exception("invalid ISBN-10");
+                        } else if (!isValidIsbn && isbn.length() == 13) {
+                            firstErrorFoundInFile = true;
+                            logSemanticExceptionToFile(
+                                    errorPrefix + "Error: invalid ISBN-13\nRecord: " + bookRecord + "\n");
+                            throw new BadIsbn13Exception("invalid ISBN-13");
+                        }
 
-                    // checks if year is valid
-                    if (!isValidYear) {
-                        logSemanticExceptionToFile(errorPrefix + "Error: invalid year\nRecord: " + bookRecord + "\n");
-                    }
-                    // checks if price is valid
-                    if (!isValidPrice) {
-                        logSemanticExceptionToFile(errorPrefix + "Error: invalid price\nRecord: " + bookRecord + "\n");
+                        // checks if year is valid
+                        if (!isValidYear) {
+                            logSemanticExceptionToFile(
+                                    errorPrefix + "Error: invalid year\nRecord: " + bookRecord + "\n");
+                            throw new BadYearException("invalid year");
+                        }
+                        // checks if price is valid
+                        if (!isValidPrice) {
+                            logSemanticExceptionToFile(
+                                    errorPrefix + "Error: invalid price\nRecord: " + bookRecord + "\n");
+                            throw new BadPriceException("Invalid Price");
+                        }
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
                     }
 
                     // checks if the book has all valid fields and creates a Book object, then
                     // pushes the object into the Book array
                     if (isValidIsbn && isValidPrice && isValidYear) {
                         Book bookObj = new Book(title, author, price, isbn, genre, year);
-                        validBooks.add(bookObj);
+                        semanticallyValidBooks[semanticValidBookCounter] = bookObj; // insert at index
+                        semanticValidBookCounter++; // increment count
                     }
                 }
 
                 // Write the array of valid books to their respective genre binary files
                 try (ObjectOutputStream outputStream = new ObjectOutputStream(
                         new FileOutputStream("part2_output_files" + File.separator + p1OutputFiles[i] + ".ser"))) {
-                    outputStream.writeInt(validBooks.size());
-                    outputStream.writeObject(validBooks);
+                    genreCounts[i][1] = String.valueOf(semanticallyValidBooks.length);
+                    Book[] stripedValidBooks = new Book[semanticValidBookCounter];
+
+                    for (int j = 0; j < semanticValidBookCounter; j++) {
+                        if (semanticallyValidBooks[j] != null) {
+                            stripedValidBooks[j] = semanticallyValidBooks[j];
+                        }
+                    }
+                    outputStream.writeObject(stripedValidBooks);
 
                 } catch (FileNotFoundException e) {
                     System.out.println("Unable to create " + p1OutputFiles[i] + " binary File.");
@@ -185,13 +210,20 @@ public class BookManager {
         }
     }
 
+    /**
+     * Reads the genre-based binary files produced in part 1, deserializes the array
+     * of
+     * Book objects in each file and provides an interacive program to allow the
+     * user to
+     * navigate the arrays.
+     */
     public static void do_part3() {
         try (Scanner scanner = new Scanner(System.in);) {
             File outputFolder = new File("part2_output_files");
             File[] listOfFiles = outputFolder.listFiles();
 
             File currentFile = listOfFiles[0];
-            ArrayList<Book> currentFileBooks = openBinaryFile(currentFile.getName());
+            Book[] currentFileBooks = openBinaryFile(currentFile.getName());
 
             String userOption = "";
 
@@ -202,12 +234,11 @@ public class BookManager {
                     System.out.println("-----------------------------\n");
                     System.out
                             .println("v  View the selected file: " + currentFile.getName() + " ("
-                                    + currentFileBooks.size()
+                                    + currentFileBooks.length
                                     + " records)");
                     System.out.println("s  Select a file to view");
                     System.out.println("x  Exit");
                     System.out.print("----------------------------- \n\nEnter Your Choice: ");
-
 
                     userOption = scanner.nextLine();
                 } else if (userOption.equals("x")) {
@@ -220,7 +251,7 @@ public class BookManager {
 
                     for (int i = 0; i < listOfFiles.length; i++) {
                         System.out.println((i + 1) + " " + listOfFiles[i].getName() + " ("
-                                + openBinaryFile(listOfFiles[i].getName()).size() + " records)");
+                                + openBinaryFile(listOfFiles[i].getName()).length + " records)");
                     }
 
                     System.out.println(listOfFiles.length + 1 + " Exit");
@@ -245,12 +276,54 @@ public class BookManager {
                         continue;
                     }
                 } else if (userOption.equals("v")) {
-                    System.out.println("viewing current file " + currentFile.getName());
-                    System.out.println(currentFileBooks.toString());  // the book array for to search through
+                    System.out.println("Viewing: " + currentFile.getName());
+                    Book currentBook = currentFileBooks[0];
+                    int viewCommand = 0;
+                    System.out.print("Enter View Command: ");
+                    viewCommand = Integer.parseInt(scanner.nextLine());
 
-                    // write code to view file based on user supplied range
+                    while (viewCommand != 0) {
+                        int currentBookIndex = 0;
 
-                    userOption = ""; // ensure to set userOption to empty string when user is done viewing contents of file
+                        for (int i = 0; i < currentFileBooks.length; i++) {
+                            if (currentFileBooks[i].equals(currentBook))
+                                currentBookIndex = i;
+                        }
+
+                        if (viewCommand == 1 || viewCommand == -1) {
+                            System.out.println(currentBook);
+                        } else if (viewCommand > 0) {
+                            for (int i = 0; i < viewCommand; i++) {
+                                if (currentBookIndex + i < currentFileBooks.length) {
+                                    System.out.println(currentFileBooks[currentBookIndex + i]);
+                                } else {
+                                    System.out.println("EOF has been reached");
+                                    break;
+                                }
+                            }
+                            // move current index to last displayed book or last book in the list depending
+                            // whichever comes first
+                            currentBookIndex = Math.min(currentBookIndex + viewCommand - 1,
+                                    currentFileBooks.length - 1);
+                            currentBook = currentFileBooks[currentBookIndex];
+                        } else if (viewCommand < 0) {
+                            int n = Math.abs(viewCommand) - 1; // calculate |n| - 1
+                            int startIndex = Math.max(currentBookIndex - n, 0); // ensures it does not go below 0
+                            if (startIndex < currentBookIndex - n) {
+                                System.out.println("EOF has been reached");
+                            }
+
+                            for (int i = startIndex; i <= currentBookIndex; i++) {
+                                System.out.println(currentFileBooks[i]);
+                            }
+
+                            currentBookIndex = startIndex;
+                            currentBook = currentFileBooks[currentBookIndex];
+                        }
+                        System.out.print("Enter View Command: ");
+                        viewCommand = Integer.parseInt(scanner.nextLine());
+                    }
+                    userOption = "";
                     continue;
                 } else {
                     System.out.println("\nInvalid Option.\n");
@@ -261,18 +334,16 @@ public class BookManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     // Auxiliary methods
-    private static ArrayList<Book> openBinaryFile(String filename) {
-        ArrayList<Book> genreBooks = null;
+    private static Book[] openBinaryFile(String filename) {
+        Book[] genreBooks = null;
 
         try (ObjectInputStream outputStream = new ObjectInputStream(
                 new FileInputStream("part2_output_files" + File.separator + filename))) {
 
-            int genreRecordCount = outputStream.readInt();
-            genreBooks = (ArrayList<Book>) outputStream.readObject();
+            genreBooks = (Book[]) outputStream.readObject();
 
             return genreBooks;
 
@@ -282,7 +353,6 @@ public class BookManager {
         } catch (EOFException e) {
             e.printStackTrace();
         } catch (FileNotFoundException e) {
-            // TODO: handle exception
             System.out.println("Unable to read binary file: " + filename);
             e.printStackTrace();
         } catch (IOException e) {
@@ -349,8 +419,7 @@ public class BookManager {
         return isbnSum % 10 == 0;
     }
 
-
-        /**
+    /**
      * Adds the given book record to the specified genre output file.
      *
      * @param bookRecord the book record to add
@@ -435,19 +504,21 @@ public class BookManager {
      *                         file
      * @return true if the book record is valid, false otherwise
      */
-    static boolean validateBookRecord(String bookRecordFile, String[] bookRecordTokens, String bookRecord,
-            boolean firstError) {
+    static void validateBookRecord(String bookRecordFile, String[] bookRecordTokens, String bookRecord,
+            boolean firstError)
+            throws TooManyFieldsException, TooFewFieldsException, MissingFieldException, UnknownGenreException {
         if (bookRecordTokens.length > 6) {
             logSyntaxErrorToFile("Error: too many fields\nRecord: " + bookRecord + "\n", firstError, bookRecordFile);
-            return false;
+            throw new TooManyFieldsException("Too many fields");
         } else if (bookRecordTokens.length < 5) {
             logSyntaxErrorToFile("Error: too few fields\nRecord: " + bookRecord + "\n", firstError, bookRecordFile);
-            return false;
+            throw new TooFewFieldsException("Too few fields");
         } else {
             if (!validateMissingFields(bookRecordTokens, bookRecord, bookRecordFile, firstError)) {
-                return false;
-            } else {
-                return isGenreValid(bookRecordTokens, bookRecord, bookRecordFile, firstError);
+                throw new TooFewFieldsException("Missing field");
+            }
+            if (!isGenreValid(bookRecordTokens, bookRecord, bookRecordFile, firstError)) {
+                throw new UnknownGenreException("Unknown genre");
             }
         }
     }
@@ -460,6 +531,7 @@ public class BookManager {
      * @param bookRecordFile   the name of the input file containing the book record
      * @param firstError       a flag indicating if this is the first error for the
      *                         file
+     * 
      * @return true if all required fields are present, false otherwise
      */
     static boolean validateMissingFields(String[] bookRecordTokens, String bookRecord, String bookRecordFile,
@@ -508,6 +580,7 @@ public class BookManager {
      * @param bookRecordFile   the name of the input file containing the book record
      * @param firstError       a flag indicating if this is the first error for the
      *                         file
+     * 
      * @return true if the genre is valid, false otherwise
      */
     static boolean isGenreValid(String[] bookRecordTokens, String bookRecord, String bookRecordFile,
