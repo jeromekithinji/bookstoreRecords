@@ -212,10 +212,8 @@ public class BookManager {
 
     /**
      * Reads the genre-based binary files produced in part 1, deserializes the array
-     * of
-     * Book objects in each file and provides an interacive program to allow the
-     * user to
-     * navigate the arrays.
+     * of Book objects in each file and provides an interacive program to allow the
+     * user to navigate the arrays.
      */
     public static void do_part3() {
         try (Scanner scanner = new Scanner(System.in);) {
@@ -500,9 +498,7 @@ public class BookManager {
      * @param bookRecordFile   the name of the input file containing the book record
      * @param bookRecordTokens the tokens of the book record
      * @param bookRecord       the book record
-     * @param firstError       a flag indicating if this is the first error for the
-     *                         file
-     * @return true if the book record is valid, false otherwise
+     * @param firstError       a flag indicating if this is the first error for the file
      */
     static void validateBookRecord(String bookRecordFile, String[] bookRecordTokens, String bookRecord,
             boolean firstError)
@@ -529,8 +525,7 @@ public class BookManager {
      * @param bookRecordTokens the tokens of the book record
      * @param bookRecord       the book record
      * @param bookRecordFile   the name of the input file containing the book record
-     * @param firstError       a flag indicating if this is the first error for the
-     *                         file
+     * @param firstError       a flag indicating if this is the first error for the file
      * 
      * @return true if all required fields are present, false otherwise
      */
