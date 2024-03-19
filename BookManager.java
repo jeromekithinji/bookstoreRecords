@@ -388,8 +388,15 @@ public class BookManager {
     static boolean isValidIsbn10(String isbn) {
         if (isbn.length() != 10)
             return false;
-        int isbnSum = 0;
 
+        // Check if isbn contains only digits
+        for (char c : isbn.toCharArray()) {
+            if (!Character.isDigit(c)) {
+                return false;
+            }
+        }
+
+        int isbnSum = 0;
         for (int i = 10; i > 0; i--) {
             isbnSum += i * Integer.parseInt(Character.toString(isbn.charAt(isbn.length() - i)));
         }
@@ -405,8 +412,14 @@ public class BookManager {
     static boolean isValidIsbn13(String isbn) {
         if (isbn.length() != 13)
             return false;
-        int isbnSum = 0;
 
+        for (char c : isbn.toCharArray()) {
+            if (!Character.isDigit(c)) {
+                return false;
+            }
+        }
+        
+        int isbnSum = 0;
         for (int i = 1; i <= isbn.length(); i++) {
             if (i % 2 == 0) {
                 isbnSum += 3 * Integer.parseInt(Character.toString(isbn.charAt(i - 1)));
