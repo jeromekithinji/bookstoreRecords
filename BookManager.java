@@ -118,8 +118,6 @@ public class BookManager {
                 while (scanner.hasNextLine()) {
                     String bookRecord = scanner.nextLine();
 
-                    System.out.println(bookRecord + "\n");
-
                     String title;
                     String author;
                     double price;
@@ -134,11 +132,6 @@ public class BookManager {
 
                         String [] otherRecordData = splitBookRecord[1].split(",");
 
-                        // for (String string : otherRecordData) {
-                        //     System.out.println(string);
-                        //     System.out.println("");
-                        // }
-
                         author = otherRecordData[0];
                         price = Double.parseDouble(otherRecordData[1]);
                         isbn = otherRecordData[2];
@@ -147,11 +140,6 @@ public class BookManager {
 
                     } else {
                         String[] splitBookRecord = bookRecord.split(",");
-
-                        for (String string : splitBookRecord) {
-                            System.out.println(string);
-                            System.out.println("");
-                        }
 
                         title = splitBookRecord[0];
                         author = splitBookRecord[1];
@@ -248,10 +236,8 @@ public class BookManager {
 
     /**
      * Reads the genre-based binary files produced in part 1, deserializes the array
-     * of
-     * Book objects in each file and provides an interacive program to allow the
-     * user to
-     * navigate the arrays.
+     * of Book objects in each file and provides an interacive program to allow the
+     * user to navigate the arrays.
      */
     public static void do_part3() {
         try (Scanner scanner = new Scanner(System.in);) {
@@ -436,8 +422,8 @@ public class BookManager {
     static boolean isValidIsbn10(String isbn) {
         if (isbn.length() != 10)
             return false;
+            
         int isbnSum = 0;
-
         try {
             for (int i = 10; i > 0; i--) {
                 isbnSum += i * Integer.parseInt(Character.toString(isbn.charAt(isbn.length() - i)));
@@ -458,6 +444,7 @@ public class BookManager {
     static boolean isValidIsbn13(String isbn) {
         if (isbn.length() != 13)
             return false;
+
         int isbnSum = 0;
 
         try {
@@ -512,6 +499,16 @@ public class BookManager {
                 System.out.println("Error: Invalid genre");
                 return;
         }
+        String bookRecordTokens[] = tokenizeBookRecord(bookRecord);
+        if (genre.equals("CCB")) {
+            // System.out.println("IN ADD RECORD Method " + bookRecord ); // Debugging purposes only
+            for (String string : bookRecordTokens) {
+                if (string.equals("") || string.equals(" ") || string.isBlank() || string.contentEquals("") || string.contentEquals(" ")) {
+                    System.out.print("\"" + string + "\", ");
+                }
+            }
+            System.out.println();
+        }
 
         PrintWriter writer = null;
         try {
@@ -556,9 +553,7 @@ public class BookManager {
      * @param bookRecordFile   the name of the input file containing the book record
      * @param bookRecordTokens the tokens of the book record
      * @param bookRecord       the book record
-     * @param firstError       a flag indicating if this is the first error for the
-     *                         file
-     * @return true if the book record is valid, false otherwise
+     * @param firstError       a flag indicating if this is the first error for the file
      */
     static void validateBookRecord(String bookRecordFile, String[] bookRecordTokens, String bookRecord,
             boolean firstError)
@@ -585,8 +580,7 @@ public class BookManager {
      * @param bookRecordTokens the tokens of the book record
      * @param bookRecord       the book record
      * @param bookRecordFile   the name of the input file containing the book record
-     * @param firstError       a flag indicating if this is the first error for the
-     *                         file
+     * @param firstError       a flag indicating if this is the first error for the file
      * 
      * @return true if all required fields are present, false otherwise
      */
@@ -595,7 +589,7 @@ public class BookManager {
         boolean missingField = false;
         String missingFields = "";
         for (int j = 0; j < bookRecordTokens.length; j++) {
-            if (bookRecordTokens[j].isEmpty()) { // should we consider if there is an empty space character as well?
+            if (bookRecordTokens[j].isEmpty() || bookRecordTokens[j].trim().isEmpty() || bookRecordTokens[j].isBlank()) { // should we consider if there is an empty space character as well?
                 missingField = true;
                 switch (j) {
                     case 0:
@@ -619,6 +613,13 @@ public class BookManager {
                 }
             }
         }
+
+        // Check if the last token is empty
+        if (bookRecordTokens.length < 6 || bookRecordTokens[5].isEmpty() || bookRecordTokens[5].trim().isEmpty()) {
+            missingField = true;
+            missingFields += "year "; // Add "year" to the missing fields if it's missing
+        }
+        
         if (missingField) {
             logSyntaxErrorToFile("Error: missing " + missingFields + "\nRecord: " + bookRecord + "\n", firstError,
                     bookRecordFile);
