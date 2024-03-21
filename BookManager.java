@@ -467,16 +467,6 @@ public class BookManager {
                 System.out.println("Error: Invalid genre");
                 return;
         }
-        String bookRecordTokens[] = tokenizeBookRecord(bookRecord);
-        if (genre.equals("CCB")) {
-            // System.out.println("IN ADD RECORD Method " + bookRecord ); // Debugging purposes only
-            for (String string : bookRecordTokens) {
-                if (string.equals("") || string.equals(" ") || string.isBlank() || string.contentEquals("") || string.contentEquals(" ")) {
-                    System.out.print("\"" + string + "\", ");
-                }
-            }
-            System.out.println();
-        }
 
         PrintWriter writer = null;
         try {
@@ -557,7 +547,7 @@ public class BookManager {
         boolean missingField = false;
         String missingFields = "";
         for (int j = 0; j < bookRecordTokens.length; j++) {
-            if (bookRecordTokens[j].isEmpty() || bookRecordTokens[j].trim().isEmpty() || bookRecordTokens[j].isBlank()) { // should we consider if there is an empty space character as well?
+            if (bookRecordTokens[j].isEmpty() || bookRecordTokens[j].trim().isEmpty() || bookRecordTokens[j].isBlank()) {
                 missingField = true;
                 switch (j) {
                     case 0:
@@ -587,7 +577,7 @@ public class BookManager {
             missingField = true;
             missingFields += "year "; // Add "year" to the missing fields if it's missing
         }
-        
+
         if (missingField) {
             logSyntaxErrorToFile("Error: missing " + missingFields + "\nRecord: " + bookRecord + "\n", firstError,
                     bookRecordFile);
