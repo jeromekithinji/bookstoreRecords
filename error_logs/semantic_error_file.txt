@@ -45,3 +45,136 @@ Semantic error in file: Sports_Sports_Memorabilia.csv
 Error: invalid year
 Record: "The Scarlet Letter", Nathaniel Hawthorne, 7.90, 9780142437261, SSM, 1850
 
+Semantic error in file: Cartoons_Comics.csv
+====================
+Error: invalid year
+Record: "The Great Gatsby", F. Scott Fitzgerald, 9.99, 9780743273565, CCB, 1925
+
+Error: invalid year
+Record: "Dracula", Bram Stoker, 7.85, 9780141439846, CCB, 1897
+
+Semantic error in file: Cartoons_Comics.csv
+====================
+Error: invalid ISBN-10
+Record: Comics Buyer's Guide Standard Catalog of Comic Books,John Jackson Miller & Maggie Thompson & Peter Bickford & Brent Frankenhoff,24.95,087349993X,CCB,2005
+
+Semantic error in file: Cartoons_Comics.csv
+====================
+Error: invalid ISBN-10
+Record: Comics Buyer's Guide Standard Catalog of Comic Books,John Jackson Miller & Maggie Thompson & Peter Bickford & Brent Frankenhoff,24.95,087349993X,CCB,2005
+
+Semantic error in file: Cartoons_Comics.csv
+====================
+Error: invalid ISBN-10
+Record: Comics Buyer's Guide Standard Catalog of Comic Books,John Jackson Miller & Maggie Thompson & Peter Bickford & Brent Frankenhoff,24.95,087349993X,CCB,2005
+
+Semantic error in file: Cartoons_Comics.csv
+====================
+Error: invalid ISBN-10
+Record: Comics Buyer's Guide Standard Catalog of Comic Books,John Jackson Miller & Maggie Thompson & Peter Bickford & Brent Frankenhoff,24.95,087349993X,CCB,2005
+
+Semantic error in file: Cartoons_Comics.csv
+====================
+Error: invalid ISBN-10
+Record: Comics Buyer's Guide Standard Catalog of Comic Books,John Jackson Miller & Maggie Thompson & Peter Bickford & Brent Frankenhoff,24.95,087349993X,CCB,2005
+
+Semantic error in file: Cartoons_Comics.csv
+====================
+Error: invalid ISBN-10
+Record: Comics Buyer's Guide Standard Catalog of Comic Books,John Jackson Miller & Maggie Thompson & Peter Bickford & Brent Frankenhoff,24.95,087349993X,CCB,2005
+
+Error: invalid ISBN-10
+Record: Private Eyes In the Comics,John A. Dinan,9.95,159393002X,CCB,2005
+
+Error: invalid price
+Record: Superman - The Complete History,Lee Daniels,-12.95,0811842312,CCB,2005
+
+Error: invalid ISBN-10
+Record: Worlds of Tomorrow - The Amazing Universe of Science Fiction Art,Forrest J. Ackerman & Brad Linaweaver,29.95,188805493X,CCB,2006
+
+Error: invalid ISBN-10
+Record: Blondie - The Bumstead Family History,Dean Young & Melena Ryzik,24.95,140160322X,CCB,2007
+
+Error: invalid ISBN-10
+Record: Manga Monster Madness,David Okum,16.95,158180606X,CCB,2009
+
+Semantic error in file: Cartoons_Comics.csv
+====================
+Error: invalid ISBN-10
+Record: Comics Buyer's Guide Standard Catalog of Comic Books,John Jackson Miller & Maggie Thompson & Peter Bickford & Brent Frankenhoff,24.95,087349993X,CCB,2005
+
+Semantic error in file: Cartoons_Comics.csv
+====================
+Error: invalid ISBN-10
+Record: Comics Buyer's Guide Standard Catalog of Comic Books,John Jackson Miller & Maggie Thompson & Peter Bickford & Brent Frankenhoff,24.95,087349993X,CCB,2005
+
+Semantic error in file: Cartoons_Comics.csv
+====================
+Error: invalid ISBN-10
+Record: Comics Buyer's Guide Standard Catalog of Comic Books,John Jackson Miller & Maggie Thompson & Peter Bickford & Brent Frankenhoff,24.95,087349993X,CCB,2005
+
+Semantic error in file: Cartoons_Comics.csv
+====================
+Error: invalid ISBN-10
+Record: Comics Buyer's Guide Standard Catalog of Comic Books,John Jackson Miller & Maggie Thompson & Peter Bickford & Brent Frankenhoff,24.95,087349993X,CCB,2005
+
+Semantic error in file: Cartoons_Comics.csv
+====================
+Error: invalid ISBN-10
+Record: Comics Buyer's Guide Standard Catalog of Comic Books,John Jackson Miller & Maggie Thompson & Peter Bickford & Brent Frankenhoff,24.95,087349993X,CCB,2005
+
+Error: invalid ISBN-10
+Record: Private Eyes In the Comics,John A. Dinan,9.95,159393002X,CCB,2005
+
+Error: invalid price
+Record: Superman - The Complete History,Lee Daniels,-12.95,0811842312,CCB,2005
+
+Error: invalid ISBN-10
+Record: Worlds of Tomorrow - The Amazing Universe of Science Fiction Art,Forrest J. Ackerman & Brad Linaweaver,29.95,188805493X,CCB,2006
+
+Error: invalid ISBN-10
+Record: Blondie - The Bumstead Family History,Dean Young & Melena Ryzik,24.95,140160322X,CCB,2007
+
+Error: invalid ISBN-10
+Record: Manga Monster Madness,David Okum,16.95,158180606X,CCB,2009
+
+Semantic error in file: Cartoons_Comics.csv
+====================
+Error: invalid ISBN-10
+Record: Comics Buyer's Guide Standard Catalog of Comic Books,John Jackson Miller & Maggie Thompson & Peter Bickford & Brent Frankenhoff,24.95,087349993X,CCB,2005
+
+Error: invalid ISBN-10
+Record: Private Eyes In the Comics,John A. Dinan,9.95,159393002X,CCB,2005
+
+Error: invalid price
+Record: Superman - The Complete History,Lee Daniels,-12.95,0811842312,CCB,2005
+
+Error: invalid ISBN-10
+Record: Worlds of Tomorrow - The Amazing Universe of Science Fiction Art,Forrest J. Ackerman & Brad Linaweaver,29.95,188805493X,CCB,2006
+
+Error: invalid ISBN-10
+Record: Blondie - The Bumstead Family History,Dean Young & Melena Ryzik,24.95,140160322X,CCB,2007
+
+Error: invalid ISBN-10
+Record: Manga Monster Madness,David Okum,16.95,158180606X,CCB,2009
+
+Semantic error in file: Cartoons_Comics.csv
+====================
+Error: invalid ISBN-10
+Record: Comics Buyer's Guide Standard Catalog of Comic Books,John Jackson Miller & Maggie Thompson & Peter Bickford & Brent Frankenhoff,24.95,087349993X,CCB,2005
+
+Error: invalid ISBN-10
+Record: Private Eyes In the Comics,John A. Dinan,9.95,159393002X,CCB,2005
+
+Error: invalid price
+Record: Superman - The Complete History,Lee Daniels,-12.95,0811842312,CCB,2005
+
+Error: invalid ISBN-10
+Record: Worlds of Tomorrow - The Amazing Universe of Science Fiction Art,Forrest J. Ackerman & Brad Linaweaver,29.95,188805493X,CCB,2006
+
+Error: invalid ISBN-10
+Record: Blondie - The Bumstead Family History,Dean Young & Melena Ryzik,24.95,140160322X,CCB,2007
+
+Error: invalid ISBN-10
+Record: Manga Monster Madness,David Okum,16.95,158180606X,CCB,2009
+
