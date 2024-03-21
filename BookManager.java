@@ -117,14 +117,38 @@ public class BookManager {
 
                 while (scanner.hasNextLine()) {
                     String bookRecord = scanner.nextLine();
-                    String[] splitBookRecord = bookRecord.split(",");
 
-                    String title = splitBookRecord[0].trim();
-                    String author = splitBookRecord[1].trim();
-                    double price = Double.parseDouble(splitBookRecord[2].trim());
-                    String isbn = splitBookRecord[3].trim();
-                    String genre = splitBookRecord[4].trim();
-                    int year = Integer.parseInt(splitBookRecord[5].trim());
+                    String title;
+                    String author;
+                    double price;
+                    String isbn;
+                    String genre;
+                    int year;
+
+                    if(bookRecord.startsWith("\"")) {
+                        String[] splitBookRecord = bookRecord.split("\",");
+
+                        title = splitBookRecord[0];
+
+                        String [] otherRecordData = splitBookRecord[1].split(",");
+
+                        author = otherRecordData[0];
+                        price = Double.parseDouble(otherRecordData[1]);
+                        isbn = otherRecordData[2];
+                        genre = otherRecordData[3];
+                        year = Integer.parseInt(otherRecordData[4]);
+
+                    } else {
+                        String[] splitBookRecord = bookRecord.split(",");
+
+                        title = splitBookRecord[0];
+                        author = splitBookRecord[1];
+                        price = Double.parseDouble(splitBookRecord[2].trim());
+                        isbn = splitBookRecord[3].trim();
+                        genre = splitBookRecord[4].trim();
+                        year = Integer.parseInt(splitBookRecord[5].trim());
+                    }
+                    
 
                     Boolean isValidIsbn = false;
                     Boolean isValidYear = false;
@@ -372,11 +396,21 @@ public class BookManager {
     }
 
     static boolean isValidPrice(double price) {
-        return price > 0 ? true : false;
+        try {
+            return price > 0 ? true : false;
+        } catch (Exception e) {
+            return false;
+        }
+        
     }
 
     static boolean isValidYear(int year) {
-        return (year >= 1995 && year <= 2024);
+        try {
+            return (year >= 1995 && year <= 2024);
+        } catch (Exception e) {
+            return false;
+        }
+
     }
 
     /**
@@ -388,19 +422,17 @@ public class BookManager {
     static boolean isValidIsbn10(String isbn) {
         if (isbn.length() != 10)
             return false;
-
-        // Check if isbn contains only digits
-        for (char c : isbn.toCharArray()) {
-            if (!Character.isDigit(c)) {
-                return false;
-            }
-        }
-
+            
         int isbnSum = 0;
-        for (int i = 10; i > 0; i--) {
-            isbnSum += i * Integer.parseInt(Character.toString(isbn.charAt(isbn.length() - i)));
+        try {
+            for (int i = 10; i > 0; i--) {
+                isbnSum += i * Integer.parseInt(Character.toString(isbn.charAt(isbn.length() - i)));
+            }
+            return isbnSum % 11 == 0;
+        } catch (Exception e) {
+            return false;
         }
-        return isbnSum % 11 == 0;
+
     }
 
     /**
@@ -413,21 +445,21 @@ public class BookManager {
         if (isbn.length() != 13)
             return false;
 
-        for (char c : isbn.toCharArray()) {
-            if (!Character.isDigit(c)) {
-                return false;
-            }
-        }
-        
         int isbnSum = 0;
-        for (int i = 1; i <= isbn.length(); i++) {
-            if (i % 2 == 0) {
-                isbnSum += 3 * Integer.parseInt(Character.toString(isbn.charAt(i - 1)));
-            } else {
-                isbnSum += Integer.parseInt(Character.toString(isbn.charAt(i - 1)));
+
+        try {
+            for (int i = 1; i <= isbn.length(); i++) {
+                if (i % 2 == 0) {
+                    isbnSum += 3 * Integer.parseInt(Character.toString(isbn.charAt(i - 1)));
+                } else {
+                    isbnSum += Integer.parseInt(Character.toString(isbn.charAt(i - 1)));
+                }
             }
+            return isbnSum % 10 == 0;
+        } catch (Exception e) {
+            return false;
         }
-        return isbnSum % 10 == 0;
+
     }
 
     /**
