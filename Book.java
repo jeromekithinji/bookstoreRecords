@@ -4,7 +4,7 @@ import java.util.Objects;
 /**
  * Represents a book with title, author, price, ISBN, genre, and publication year.
  */
-class Book implements Serializable {
+public class Book implements Serializable {
     String title;
     String author;
     double price;

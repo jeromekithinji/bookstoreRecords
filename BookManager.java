@@ -18,6 +18,9 @@ import Exceptions.TooFewFieldsException;
 import Exceptions.TooManyFieldsException;
 import Exceptions.UnknownGenreException;
 
+/**
+ * Manages book records, including reading, validating, and organizing book data.
+ */
 public class BookManager {
     static String[][] genreCounts = { { "CCB", "0" }, { "HCB", "0" }, { "MTV", "0" }, { "MRB", "0" }, { "NEB", "0" },
             { "OTR", "0" }, { "SSM", "0" }, { "TPA", "0" } };
@@ -33,7 +36,7 @@ public class BookManager {
      * and adds valid records to output files. Logs syntax errors to a
      * separate error log file.
      */
-    static void do_part1() {
+    public static void do_part1() {
         String bookRecordsNames[] = new String[0];
         Scanner scanner = null;
 
@@ -90,9 +93,9 @@ public class BookManager {
      * Reads the genre-based CVS-formatted input text files produced in Part 1, one
      * file at a time, creating an array of valid Book objects out of all the
      * semantically valid book records in each input file, then serializes the
-     * resulting array of Book objects into the genre's binary file
+     * resulting array of Book objects into the genre's binary file.
      */
-    static void do_part2() {
+    public static void do_part2() {
         String[] p1OutputFiles = {
                 "Cartoons_Comics.csv",
                 "Hobbies_Collectibles.csv",
