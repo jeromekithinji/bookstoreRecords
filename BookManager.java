@@ -3,12 +3,12 @@
  * Assignment #2
  * Due Date: Sunday, March 24th, 2024.
  * 
- * © Oluwamosope Adeyemi. ID: 40293741
- * © Jerome Kithinji. ID: 40280348
+ * © Oluwamosope Adeyemi.
+ * © Jerome Kithinji.
  * 
  * Written by: 
- * Jerome Kithinji. ID: 40280348
- * Oluwamosope Adeyemi. ID: 40293741
+ * Jerome Kithinji.
+ * Oluwamosope Adeyemi.
  */
 
 import java.io.EOFException;
